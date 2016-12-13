@@ -1,0 +1,32 @@
+<style media="screen">
+    .comments{
+        border: 1px solid black;
+        padding: 5px;
+        margin: 10px;
+        width: 500px;
+        height: 200px;
+        overflow: scroll;
+    }
+</style>
+<a href="/events">Events Dashboard</a>
+<h1><%= @event.name %></h1>
+<p>Host: <%= @event.user.first %> <%= @event.user.last %></p>
+<p>Date: <%= @event.date.strftime('%b %e, %G') %></p>
+<p>Location: <%= @event.city %>, <%= @event.state %></p>
+<p>People who are joining the event: <%= @event.users.count %></p>
+<br>
+<h3>Discussion about this event:</h3>
+<div class="comments">
+    <% @comments.each do |comment| %>
+        <p><%= comment.user.first %> says: <%= comment.content %></p>
+        <p>-------------------------</p>
+    <% end %>
+</div>
+<br>
+<h4>Add Comment:</h4>
+<form action="/comments/create" method="post">
+    <input type="hidden" name="authenticity_token" value="form_authenticity_token">
+    <input type="hidden" name="comment[event]" value="<%= @event.id %>">
+    <textarea name="comment[content]" rows="4" cols="80"></textarea>
+    <p><input type="submit" value="Submit Comment"></p>
+</form>

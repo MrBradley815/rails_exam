@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BeltReviewer</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <style media="screen">
+      .toolbar{
+          background: linear-gradient(mediumslateblue,lavender);
+          padding: 8px;
+          font-family: arial;
+          border-radius: 5px;
+          color: white;
+      }
+      .toolbar a{
+          color: white;
+          text-decoration: none;
+      }
+      .toolbar a:hover{
+          text-decoration: underline;
+      }
+  </style>
+</head>
+<body>
+    <div class="toolbar">
+        <% if current_user %>
+            <%= link_to "Log Out", '/sessions', { controller: 'attend', action: 'create', method: "delete" } %>
+        <% end %>
+         | <a href="/users/<%= current_user.id %>/edit">Edit My Profile</a>
+    </div>
+    <%= yield %>
+
+</body>
+</html>

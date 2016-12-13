@@ -1,0 +1,17 @@
+<style media="screen">
+    select{
+        margin-left: 8px;
+    }
+</style>
+<a href="/events">Events Dashboard</a>
+<h1>Edit Your Profile</h1>
+<hr>
+<form action="/users/<%=current_user.id%>" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <input type="hidden" name="_method" value="patch">
+    <p>First Name: <input type="text" name="user[first]" value="<%=current_user.first%>"></p>
+    <p>Last Name: <input type="text" name="user[last]" value="<%=current_user.last%>"></p>
+    <p>Email: <input type="text" name="user[email]" value="<%=current_user.email%>"></p>
+    <p>City: <input type="text" name="user[city]" value="<%=current_user.city%>"><%= select_tag "user[state]", options_for_select(us_states.collect{ |state| [state[0], state[1]]}, current_user.state) %></p>
+    <input type="submit" value="Update Records">
+</form>

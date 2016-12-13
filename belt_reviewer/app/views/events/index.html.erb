@@ -1,0 +1,99 @@
+<style media="screen">
+    select{
+        margin-left: 8px;
+    }
+    table,th,td{
+        border: 1px solid black;
+        padding: 5px;
+    }
+    .success{
+        color: green;
+        font-weight: bold;
+        font-size: 30px;
+    }
+</style>
+<% if flash[:success] %>
+    <% flash[:success].each do |success| %>
+        <p class="success"><%= success %></p>
+    <% end %>
+<% end %>
+<h1>Welcome, <%= @user.first %></h1>
+<br>
+<h3>Here are some of the events at your state:</h3>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Date</th>
+        <th>City</th>
+        <th>Host</th>
+        <th>Action/Status</th>
+    </tr>
+    <tbody>
+        <% @state_events.each do |event| %>
+            <tr>
+                <td><a href="/events/<%= event.id %>"><%= event.name %></a></td>
+                <td><%= event.date.strftime('%b %e, %G') %></td>
+                <td><%= event.city %></td>
+                <td><%= event.user.first %></td>
+                <td><% if current_user.id == event.user.id %>
+                        <a href="/events/#{event.id}/edit">Edit</a> <%= link_to "Delete", "/events/#{event.id}", { controller: 'events', action: 'destroy', method: 'delete', id: event.id} %>
+                    <% elsif current_user.events_attended.include? event %>
+                        Joining | <%= link_to "Cancel", "/attend/#{event.id}", { controller: 'attend', action: 'destroy', method: 'delete', id: event.id} %>
+                    <% else %>
+                        <%= link_to "Join", "/attend/create/#{event.id}", { controller: 'attend', action: 'create', method: 'post', id: event.id} %>
+                    <% end %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+<h3>Here are some of the events in other states:</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Host</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @other_events.each do |event| %>
+            <tr>
+                <td><a href="/events/<%= event.id %>"><%= event.name %></a></td>
+                <td><%= event.date.strftime('%b %e, %G') %></td>
+                <td><%= event.city %></td>
+                <td><%= event.state %></td>
+                <td><%= event.user.first %></td>
+                <td><% if current_user.id == event.user.id %>
+                        <a href="/events/<%= event.id %>/edit">Edit</a> <%= link_to "Delete", "/events/#{event.id}", { controller: 'events', action: 'destroy', method: 'delete', id: event.id} %>
+                    <% elsif current_user.events_attended.include? event %>
+                        Joining | <%= link_to "Cancel", "/attend/#{event.id}", { controller: 'attend', action: 'destroy', method: 'delete', id: event.id} %>
+                    <% else %>
+                        <%= link_to "Join", "/attend/create/#{event.id}", { controller: 'attend', action: 'create', method: 'post', id: event.id} %>
+                    <% end %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+<br>
+<h3>Add Event</h3>
+<form action="/events/create" method="post">
+    <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+    <p>Name: <input type="text" name="event[name]"></p>
+    <p>Date: <input type="date" name="event[date]"></p>
+    <p>Location: <input type="text" name="event[city]"><select name="event[state]">
+        <option value="TX">TX</option>
+        <option value="NM">NM</option>
+        <option value="OK">OK</option>
+        <option value="LA">LA</option>
+        <option value="AR">AR</option>
+    </select></p>
+    <input type="submit" value="Add Event">
+</form>
+<% if flash[:errors] %>
+    <% flash[:errors].each do |error| %>
+        <p><%= error %></p>
+    <% end %>
+<% end %>
